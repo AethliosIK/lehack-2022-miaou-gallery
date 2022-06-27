@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block title %} - Login{% endblock %}
+{% block head %}{{super()}}{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="col-md-10 col-md-offset-1">
+		<h1>Profile</h1>
+		<form class="form-horizontal" id="profile-form" name="profile_form" method="POST">
+			<div class="form-group">
+				<div class="input-group">
+					<div class="input-group-addon">Favorite season</div>
+					<input type="text" class="form-control input" name="season" placeholder="Last season">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="input-group">
+					<div class="input-group-addon">Favorite episode</div>
+					<input type="text" class="form-control input" name="episode" placeholder="First episode">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="input-group">
+					<div class="input-group-addon">Favorite character</div>
+					<input type="text" class="form-control input" name="character" placeholder="Finn or Jake ?">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="input-group">
+					<div class="input-group-addon">Favorite scene</div>
+					<input type="text" class="form-control input" name="scene" placeholder="Death of ...">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="input-group">
+					<div class="input-group-addon">Favorite cliffhanger</div>
+					<input type="text" class="form-control input" name="cliffhanger" placeholder="DEATH OF ...">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="panel panel-default pull-left">
+					<div class="panel-heading">
+						<label class="panel-title" for="inputFile">Import *.yml</label>
+					</div>
+					<div class="panel-body">
+						<input type="file" id="inputFile">
+						<p class="help-block">Using PyYaml to import your profile</p>
+					</div>
+				</div>
+				<div class="btn-group pull-right">
+					<button type="button" class="btn btn-lg btn-primary dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>
+					<ul class="dropdown-menu" role="menu">
+						<li><button class='btn btn-link' id="save-btn">Save</button></li>  
+						<li><button class='btn btn-link' id="load-btn">Load</button></li>  
+						<li class="divider"></li>
+						<li><button class='btn btn-link' id="import-btn">Import</button></li>
+						<li><button class='btn btn-link' id="export-btn">Export</button></li>
+					</ul>
+				</div>
+			</div>
+		</form>
+		<div class="row">
+			<label for="export-textarea">YAML file exported:</label>
+		</div>
+		<div class="row">
+			<textarea class="form-control" rows="5" readonly id="export-textarea"></textarea>
+		</div>
+	</div>
+</div>
+ <script src="/static/js/profile.js"></script>
+{% endblock %}

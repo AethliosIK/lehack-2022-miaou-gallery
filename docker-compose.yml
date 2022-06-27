@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  miaou:
+    build: 
+      dockerfile: docker/Dockerfile
+      context: .
+    ports:
+      - "5000:5000"
+    environment:
+      - WAIT_HOSTS=db:3306
+      - DATABASE_URI=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/miaou
+      - SECRET_KEY_FLASK=${SECRET_KEY_FLASK}
+      - PASSWORD_SALT_FLASK=${PASSWORD_SALT_FLASK}
+      - REDIS_URI=${REDIS_URI}
+      - FLAG=${FLAG}
+    volumes:
+      - ./.uploads:/opt/miaou/uploads
+    networks:
+      - internal
+
+  db:
+    image: mysql:latest
+    hostname: db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=miaou
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    networks:
+      - internal
+
+  redis:
+    image: redis:latest
+    hostname: redis
+    networks:
+      - internal
+
+networks:
+  internal:
+    external: false

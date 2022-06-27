@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %} - {{ name }}{% endblock %}
+{% block head %}{{super()}}{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="col-md-6 col-md-offset-3">
+        <h1>{{ name }}</h1>
+		<form class="form-horizontal" id="upload-form" name="upload_form" method="POST">
+			<div class="form-group">
+				<div class="panel panel-default pull-left">
+					<div class="panel-heading">
+						<label class="panel-title" for="inputFile">Import *.jpg</label>
+					</div>
+					<div class="panel-body">
+						<input type="file" id="inputFile">
+					</div>
+				</div>
+				<div class="btn-group pull-right">
+					<button type="button" id="upload-btn" class="btn btn-lg btn-primary">Upload</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+ <script src="/static/js/upload.js"></script>
+{% endblock %}

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>MiaouGallery {% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/static/img/logo.ico" />
+    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/main.css" rel="stylesheet">
+    <link href="/static/css/footer.css" rel="stylesheet">
+    <link href="/static/css/nyan.css" rel="stylesheet">
+    <link href="/static/css/screamer.css" rel="stylesheet">
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/vendor/bootstrap-notify/js/bootstrap-notify.min.js"></script>
+    <script src="/static/js/nyan.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-default sidebar" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">
+                    MiaouGallery<img class="logo" src="/static/img/logo.ico"/>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+                {% if not current_user.email %}
+                <a class="navbar-brand" href="{{ url_for_security('login') }}">
+                    {{ _('Login') }}<span style="font-size:32px;" class="pull-left showopacity icon-nav glyphicon glyphicon-log-in"></span>
+                </a>
+                    {% if security.registerable %}
+                <a class="navbar-brand" href="{{ url_for_security('register') }}">
+                    {{ _('Register') }}<span style="font-size:32px;" class="pull-left showopacity icon-nav glyphicon glyphicon-user"></span>
+                </a>
+                    {% endif %}
+                {% else %}
+                <a class="navbar-brand" href="/upload">
+                    Upload<img src="/static/img/miaou2.ico" class="pull-left showopacity icon">
+                </a>
+                <a class="navbar-brand" href="/gallery">
+                    Gallery<img src="/static/img/miaou1.ico" class="pull-left showopacity icon">
+                </a>
+                <a class="navbar-brand"  href="/settings">
+                    Settings<span style="font-size:32px;" class="pull-left showopacity icon-nav glyphicon glyphicon-cog"></span>
+                </a>
+                <a class="navbar-brand" href="{{ url_for_security('logout') }}">
+                    Logout<span style="font-size:32px;" class="pull-left showopacity icon-nav glyphicon glyphicon-log-out"></span>
+                </a>
+                {% endif %}
+                <a class="navbar-brand" onclick="awesome()">
+                    Awesome <img id="awesome" class="pull-left icon" src="/static/img/miaou2.ico">
+                </a>
+                <p class="navbar-text navbar-right">Powered by Nyan cat</p>
+            </div>
+        </div>
+    </nav>
+    <div class="main">
+        <div class="nyan"></div>
+        <div id="page-content-wrapper">
+             {% block content %}{% endblock %}
+        </div>
+    	<div class="alert text-center show" id="cookiealert" role="alert">
+    	    We use your uploaded images to ensure you get the best experience on our website - <a href="/privacy" target="_blank">Learn more</a>
+    	    <button type="button" class="btn btn-primary btn-sm" id="acceptcookies" aria-label="Close">
+    	        I agree
+	        </button>
+    	</div>
+        <script>
+            $(document).on("click", "#acceptcookies", function () {
+                console.log("Yes, I can pilfer your secret data...");
+                $("#cookiealert")[0].classList.remove("show");
+            });
+            const awesome = function () {
+            	var awesome = document.getElementById("awesome");
+                if (awesome == null) {
+            	    var awesome = document.getElementById("screamer");
+                    awesome.id = "awesome";
+                } else {
+                    awesome.id = "screamer";
+                }
+        	}
+        </script>
+    </div>
+</body>
+<!-- Chall by Aethlios - https://aeth.cc -->
+</html>
